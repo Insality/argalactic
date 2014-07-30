@@ -6,6 +6,7 @@ __author__ = 'Insality'
 from entities.enemy import *
 import config
 from cocos.actions import *
+from random import choice
 
 enemies = [SimpleEnemy, ShootEnemy]
 spawn_zone = []
@@ -14,11 +15,16 @@ spawn_zone_count = 8
 class EnemyManager(cocos.layer.Layer):
     def __init__(self):
         super(EnemyManager, self).__init__()
-        delta_y = (config.GAME_HEIGHT - 32)/spawn_zone_count
-        for i in range(spawn_zone_count):
-            spawn_zone.append((config.GAME_WIDTH+256, delta_y * i + 32))
 
-        self.schedule_interval(self.spawn_boss, 1)
+        # Creating spawn zones:
+        delta_x = (config.GAME_WIDTH - 32)/spawn_zone_count
+        for i in range(spawn_zone_count):
+            spawn_zone.append((delta_x * i + 32, config.GAME_HEIGHT+256 ))
+
+        self.levels = Level()
+        print(dir(self.levels))
+        # self.schedule_interval(self.spawn_random, 4)
+        self.do(self.start_level1())
 
     def spawn_boss(self, dt):
         action = Spawn(FrogBoss, spawn_zone[4])
@@ -40,6 +46,14 @@ class EnemyManager(cocos.layer.Layer):
         action += Delay(0.4)
         self.do( action )
 
+    def start_level1(self):
+        level = Delay(1)
+        for i in range(4):
+            level += choice(self.levels.levels)
+            level += Delay(5)
+        level += Spawn(FrogBoss, spawn_zone[4])
+        return level
+
 class Spawn(InstantAction):
     def __init__(self, entity, pos):
         super(Spawn, self).__init__()
@@ -47,7 +61,7 @@ class Spawn(InstantAction):
         self.pos = pos
 
     def start(self):
-        self.target.add(DangerArrow(config.GAME_WIDTH - 16, self.pos[1]))
+        self.target.add(DangerArrow(self.pos[0], config.GAME_HEIGHT - 16))
         self.target.parent.game_layer.add(self.entity(self.pos))
 
 class DangerArrow(Entity):
@@ -55,8 +69,131 @@ class DangerArrow(Entity):
         super(DangerArrow, self).__init__("res/arrow.png")
         self.position = x, y
         self.scale = 1.5
-        self.do( (MoveBy((-16, 0), 0.3) + Reverse(MoveBy((-16, 0), 0.3))) * 3)
+        self.do( (MoveBy((0, -16), 0.3) + Reverse(MoveBy((0, -16), 0.3))) * 3)
         self.schedule_interval(self.destoy, 1.2)
 
     def destoy(self, dt):
         self.kill()
+
+
+class Level:
+    def __init__(self):
+        self.levels = []
+
+        wave = Spawn(choice(enemies), spawn_zone[0])
+        wave += Spawn(choice(enemies), spawn_zone[7])
+        wave += Delay(0.5)
+        wave += Spawn(choice(enemies), spawn_zone[1])
+        wave += Spawn(choice(enemies), spawn_zone[6])
+        wave += Delay(0.5)
+        wave += Spawn(choice(enemies), spawn_zone[2])
+        wave += Spawn(choice(enemies), spawn_zone[5])
+        wave += Delay(0.5)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.5)
+
+        self.levels.append(wave)
+
+
+        wave = Spawn(choice(enemies), spawn_zone[3])
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.5)
+        wave += Spawn(choice(enemies), spawn_zone[2])
+        wave += Spawn(choice(enemies), spawn_zone[5])
+        wave += Delay(0.5)
+        wave += Spawn(choice(enemies), spawn_zone[1])
+        wave += Spawn(choice(enemies), spawn_zone[6])
+        wave += Delay(0.5)
+        wave += Spawn(choice(enemies), spawn_zone[0])
+        wave += Spawn(choice(enemies), spawn_zone[7])
+        wave += Delay(0.5)
+
+        self.levels.append(wave)
+
+
+        wave = Spawn(choice(enemies), spawn_zone[0])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[1])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[2])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[5])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[6])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[7])
+
+        self.levels.append(wave)
+
+
+        wave = Spawn(choice(enemies), spawn_zone[7])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[6])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[5])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[2])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[1])
+        wave += Delay(0.3)
+        wave += Spawn(choice(enemies), spawn_zone[0])
+
+        self.levels.append(wave)
+
+        wave = Spawn(choice(enemies), spawn_zone[0])
+        wave += Delay(0.4)
+        wave = Spawn(choice(enemies), spawn_zone[0])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[1])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[1])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[2])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[2])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[5])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[5])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[6])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[7])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[7])
+
+        self.levels.append(wave)
+
+        wave = Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[4])
+        wave += Delay(0.4)
+        wave += Spawn(choice(enemies), spawn_zone[3])
+        wave += Delay(0.4)
+
+        self.levels.append(wave)

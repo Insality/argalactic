@@ -4,7 +4,7 @@ __author__ = 'Insality'
 from entities.entity import Entity
 import config
 from cocos.actions import Repeat, RotateBy
-
+import math
 bullet_image = {
     config.ENTITY_ENEMY_BULLET: "res/enemy_bullet.png",
     config.ENTITY_FROGBOSS_BULLET: "res/boss1_bullet.png",
@@ -12,15 +12,15 @@ bullet_image = {
 }
 
 class Bullet(Entity):
-    def __init__(self, x, y, type):
+    def __init__(self, pos, type):
         super(Bullet, self).__init__(bullet_image[type])
         self.type = type
-        self.position = (x, y)
+        self.position = pos
         self.speed = 9
         self.damage = 1
-        self.schedule(self.update)
+        self.schedule(self.update_out_screen)
 
-    def update(self, dt):
+    def update_out_screen(self, dt):
         if (self.is_outside()):
             self.destroy()
 
@@ -28,29 +28,27 @@ class Bullet(Entity):
         self.kill()
 
 class PlayerBullet(Bullet):
-    def __init__(self, x, y):
-        super(PlayerBullet, self).__init__(x, y, config.ENTITY_PLAYER_BULLET)
+    def __init__(self, pos):
+        super(PlayerBullet, self).__init__(pos, config.ENTITY_PLAYER_BULLET)
         self.type = config.ENTITY_PLAYER_BULLET
-        self.schedule(self.update)
-        self.position = (x, y)
+        self.position = pos
         self.speed = 9
         self.damage = 1
         self.schedule(self.move)
 
     def move(self, dt):
-        self.x += self.speed
+        self.y += self.speed
 
 class EnemyBullet(Bullet):
-    def __init__(self, x, y):
-        super(EnemyBullet, self).__init__(x, y, config.ENTITY_ENEMY_BULLET)
+    def __init__(self, pos, direction = 180):
+        super(EnemyBullet, self).__init__(pos, config.ENTITY_ENEMY_BULLET)
         self.type = config.ENTITY_ENEMY_BULLET
-        self.schedule(self.update)
-        self.position = (x, y)
-        self.speed = 6
+        self.position = pos
+        self.move_speed = 6
         self.damage = 2
         self.schedule(self.move)
+        self.direction = direction
         self.do(Repeat( RotateBy (360, 1)))
 
-
     def move(self, dt):
-        self.x -= self.speed
+        self.move_by_direction()

@@ -11,7 +11,7 @@ import profile
 from entities.enemy_manager import EnemyManager
 from cocos.actions import *
 import random
-
+from pyglet.window import key
 class Game(cocos.scene.Scene):
     def __init__(self):
         super(Game, self).__init__()
@@ -48,6 +48,7 @@ class GameLayer(cocos.layer.Layer):
 
         self.collman = cm.CollisionManagerGrid(0, config.GAME_WIDTH, 0, config.GAME_HEIGHT, 128, 128)
         self.schedule(self.update)
+        self.schedule_interval(self.update_second, 1)
 
     def update(self, dt):
         self.collman.clear()
@@ -57,6 +58,15 @@ class GameLayer(cocos.layer.Layer):
         for first, other in self.collman.iter_all_collisions():
             first.collide(other)
             other.collide(first)
+
+    def update_second(self, dt):
+        self.update_bonuses()
+
+    def update_bonuses(self):
+        if profile.BONUS_SPEED_TIME > 0:
+            profile.BONUS_SPEED_TIME -= 1
+        if profile.BONUS_SHIELD_TIME > 0:
+            profile.BONUS_SHIELD_TIME -= 1
 
 class HUDLayer(cocos.layer.Layer):
     def __init__(self):
@@ -93,18 +103,36 @@ class BackgroundLayer(cocos.layer.Layer):
         for i in range(stars_count):
             self.add(BackgroundStar())
 
+    def set_speed(self, value):
+        self.goal_speed = value
+        self.schedule(self.change_smooth_speed)
+
+    def change_smooth_speed(self, dt):
+        delta = 0.02
+        if (self.goal_speed < self.speed):
+            delta *= -1
+
+        self.speed += delta
+
+        if (abs(self.speed - self.goal_speed) < delta*5):
+            self.speed = self.goal_speed
+            self.unschedule(self.change_smooth_speed)
+
 class BackgroundStar(cocos.sprite.Sprite):
     def __init__(self):
         super(BackgroundStar, self).__init__("res/star.png")
         self.speed = random.randint(8, 40)/10.
         self.scale = random.randint(1, 7)/10.
         bright = random.randint(0, 125)+124
+
         self.color= (bright, bright, bright)
         self.w,self.h = cocos.director.director.get_window_size()
         self.position = (random.randint(0, self.w), random.randint(0, self.h))
         self.schedule(self.update)
 
     def update(self, dt):
-        self.x -= self.speed * self.parent.speed
-        if (self.x <= -30):
-            self.position = (self.w+30, random.randint(0, self.h))
+        self.y -= self.speed * self.parent.speed
+        if (self.y <= -30):
+            self.position = (random.randint(0, self.w), self.h+10 )
+        if (self.y >= config.GAME_HEIGHT + 30):
+            self.position = (random.randint(0, self.w), -10 )

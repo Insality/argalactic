@@ -17,14 +17,18 @@ class Enemy(Entity):
         self.max_hp = 1
         self.hp = self.max_hp
         self.move_speed = 5
+        self.rotation = 180
 
         self.schedule(self.update)
 
     def update(self, dt):
-        self.x -= self.move_speed
+        self.move()
 
         if (self.is_far_outside()):
             self.kill()
+
+    def move(self):
+        self.y -= self.move_speed
 
     def collide(self, other):
         if other.type == config.ENTITY_PLAYER_BULLET:
@@ -42,8 +46,9 @@ class Enemy(Entity):
         self.kill()
 
     def reward(self):
-        if (random()*100 < 20):
-            self.parent.do((SpawnBonus(BONUS_CRYSTAL, self.position) + Delay(0.1))*2)
+        if (random()*100 < 90):
+            action = CallFuncS(Bonus.spawn, BONUS_CRYSTAL, self.position)
+            self.parent.do( (action+ Delay(0.05)) *5 )
 
 class SimpleEnemy(Enemy):
     def __init__(self, pos):
@@ -61,8 +66,10 @@ class ShootEnemy(Enemy):
         self.schedule_interval(self.shoot, self.shoot_speed)
 
     def shoot(self, dt):
-        self.parent.add(EnemyBullet(self.x-18, self.y))
+        player_pos = self.parent.player.position
+        self.parent.add(EnemyBullet( (self.x, self.y - 18), self.angle_with(player_pos) ))
 
     def reward(self):
         if (random()*100 < 20):
-            self.parent.do((SpawnBonus(BONUS_CRYSTAL, self.position) + Delay(0.1))*3)
+            pass
+            # self.parent.do((SpawnBonus(BONUS_SPEED, self.position) + Delay(0.1)))
