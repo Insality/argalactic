@@ -48,7 +48,7 @@ class EnemyManager(cocos.layer.Layer):
 
     def start_level1(self):
         level = Delay(1)
-        for i in range(0):
+        for i in range(4):
             level += choice(self.levels.levels)
             level += Delay(5)
         level += Spawn(FrogBoss, spawn_zone[4])

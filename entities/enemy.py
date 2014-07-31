@@ -46,9 +46,9 @@ class Enemy(Entity):
         self.kill()
 
     def reward(self):
-        if (random()*100 < 90):
+        if (random()*100 < 30):
             action = CallFuncS(Bonus.spawn, BONUS_CRYSTAL, self.position)
-            self.parent.do( (action+ Delay(0.05)) *5 )
+            self.parent.do( (action+ Delay(0.05)) *2 )
 
 class SimpleEnemy(Enemy):
     def __init__(self, pos):
@@ -70,6 +70,6 @@ class ShootEnemy(Enemy):
         self.parent.add(EnemyBullet( (self.x, self.y - 18), self.angle_with(player_pos) ))
 
     def reward(self):
-        if (random()*100 < 90):
-            action = CallFuncS(Bonus.spawn, BONUS_CRYSTAL, self.position)
-            self.parent.do( (action+ Delay(0.05)) *2 )
+        if (random()*100 < 20):
+            action = CallFuncS(Bonus.spawn, BONUS_SPEED, self.position)
+            self.parent.do( action )

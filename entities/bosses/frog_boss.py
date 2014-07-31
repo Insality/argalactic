@@ -44,7 +44,7 @@ class FrogBoss(Enemy):
         self.last_turret += 1
         self.last_turret %= len(self.turrets)
         self.unschedule(self.shoot)
-        self.schedule_interval(self.shoot, 0.02/self.state)
+        self.schedule_interval(self.shoot, 0.2/self.state)
 
     def update_state(self, dt):
         if (float(self.hp)/self.max_hp < 0.3 and self.state == 1):
