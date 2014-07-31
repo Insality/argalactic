@@ -12,6 +12,8 @@ from entities.enemy_manager import EnemyManager
 from cocos.actions import *
 import random
 from pyglet.window import key
+import soundex
+
 class Game(cocos.scene.Scene):
     def __init__(self):
         super(Game, self).__init__()
@@ -26,6 +28,8 @@ class Game(cocos.scene.Scene):
         self.enemy_manager = EnemyManager()
         self.add( self.enemy_manager, z = 1, name='enemy_manager')
 
+        self.start_music()
+
         self.hud_layer = self.get_hud_layer()
         self.add( self.hud_layer, z=3, name='hud_layer')
 
@@ -38,6 +42,11 @@ class Game(cocos.scene.Scene):
     def get_hud_layer(self):
         return HUDLayer()
 
+    def start_music(self):
+        self.music = soundex.load('music/theme1.mp3')
+        soundex.music_volume(40)
+        soundex.sound_volume(40)
+        soundex.play_music()
 
 class GameLayer(cocos.layer.Layer):
     def __init__(self):
@@ -120,7 +129,7 @@ class BackgroundLayer(cocos.layer.Layer):
 
 class BackgroundStar(cocos.sprite.Sprite):
     def __init__(self):
-        super(BackgroundStar, self).__init__("res/star.png")
+        super(BackgroundStar, self).__init__("star.png")
         self.speed = random.randint(8, 40)/10.
         self.scale = random.randint(1, 7)/10.
         bright = random.randint(0, 125)+124

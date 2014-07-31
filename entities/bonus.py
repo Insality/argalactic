@@ -8,8 +8,8 @@ import random
 import cocos
 from cocos.actions import *
 
-BONUS_CRYSTAL = 'res/crystal.png'
-BONUS_SPEED = 'res/speed_bonus.png'
+BONUS_CRYSTAL = 'crystal.png'
+BONUS_SPEED = 'speed_bonus.png'
 
 bonuses = [BONUS_CRYSTAL, BONUS_SPEED]
 
@@ -23,7 +23,7 @@ class Bonus(Entity):
         self.max_speed = random.choice([6, 6.5, 7])
         self.crystal_count = random.randint(5, 10)
 
-        self.bonus_back = cocos.sprite.Sprite('res/bonus_back.png')
+        self.bonus_back = cocos.sprite.Sprite('bonus_back.png')
         self.bonus_back.do(cocos.actions.Repeat(cocos.actions.RotateBy(360, 1)))
         self.add(self.bonus_back)
 

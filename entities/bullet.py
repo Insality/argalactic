@@ -6,9 +6,9 @@ import config
 from cocos.actions import Repeat, RotateBy
 import math
 bullet_image = {
-    config.ENTITY_ENEMY_BULLET: "res/enemy_bullet.png",
-    config.ENTITY_FROGBOSS_BULLET: "res/boss1_bullet.png",
-    config.ENTITY_PLAYER_BULLET: "res/bullet.png"
+    config.ENTITY_ENEMY_BULLET: "enemy_bullet.png",
+    config.ENTITY_FROGBOSS_BULLET: "boss1_bullet.png",
+    config.ENTITY_PLAYER_BULLET: "bullet.png"
 }
 
 class Bullet(Entity):

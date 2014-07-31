@@ -48,7 +48,7 @@ class EnemyManager(cocos.layer.Layer):
 
     def start_level1(self):
         level = Delay(1)
-        for i in range(4):
+        for i in range(0):
             level += choice(self.levels.levels)
             level += Delay(5)
         level += Spawn(FrogBoss, spawn_zone[4])
@@ -66,7 +66,7 @@ class Spawn(InstantAction):
 
 class DangerArrow(Entity):
     def __init__(self, x, y):
-        super(DangerArrow, self).__init__("res/arrow.png")
+        super(DangerArrow, self).__init__("arrow.png")
         self.position = x, y
         self.scale = 1.5
         self.do( (MoveBy((0, -16), 0.3) + Reverse(MoveBy((0, -16), 0.3))) * 3)

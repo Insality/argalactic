@@ -7,10 +7,11 @@ import config
 from entities.bonus import *
 from cocos.actions import *
 import math
+import pyglet
 
 class FrogBoss(Enemy):
     def __init__(self, pos):
-        super(FrogBoss, self).__init__(pos, "res/boss1.png")
+        super(FrogBoss, self).__init__(pos, "boss1.png")
         self.score_value = 3000
         self.move_speed = 3
         self.shoot_speed = 2
@@ -43,7 +44,7 @@ class FrogBoss(Enemy):
         self.last_turret += 1
         self.last_turret %= len(self.turrets)
         self.unschedule(self.shoot)
-        self.schedule_interval(self.shoot, 0.2/self.state)
+        self.schedule_interval(self.shoot, 0.02/self.state)
 
     def update_state(self, dt):
         if (float(self.hp)/self.max_hp < 0.3 and self.state == 1):
@@ -68,7 +69,7 @@ class FrogBoss(Enemy):
 
 class FrogBossTurret(Entity):
     def __init__(self, pos):
-        super(FrogBossTurret, self).__init__("res/boss1_turret.png")
+        super(FrogBossTurret, self).__init__("boss1_turret.png")
         self.anchor_y = -25
         self.position = pos
         self.y -= self.anchor_y

@@ -7,10 +7,11 @@ import bullet
 from entities.entity import Entity
 import config
 import profile
+import resource
 
 class Player(Entity):
     def __init__(self):
-        super(Player, self).__init__("res/player.png")
+        super(Player, self).__init__(resource.player)
         self.type = config.ENTITY_PLAYER
         self.buttons = None
         self.position = (config.GAME_WIDTH/2, 64)

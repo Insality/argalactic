@@ -52,12 +52,12 @@ class Enemy(Entity):
 
 class SimpleEnemy(Enemy):
     def __init__(self, pos):
-        super(SimpleEnemy, self).__init__(pos, "res/simple_enemy.png")
+        super(SimpleEnemy, self).__init__(pos, "simple_enemy.png")
         self.score_value = 50
 
 class ShootEnemy(Enemy):
     def __init__(self, pos):
-        super(ShootEnemy, self).__init__(pos, "res/shooter_enemy.png")
+        super(ShootEnemy, self).__init__(pos, "shooter_enemy.png")
         self.score_value = 125
         self.move_speed = 3
         self.shoot_speed = 2
@@ -70,6 +70,6 @@ class ShootEnemy(Enemy):
         self.parent.add(EnemyBullet( (self.x, self.y - 18), self.angle_with(player_pos) ))
 
     def reward(self):
-        if (random()*100 < 20):
-            pass
-            # self.parent.do((SpawnBonus(BONUS_SPEED, self.position) + Delay(0.1)))
+        if (random()*100 < 90):
+            action = CallFuncS(Bonus.spawn, BONUS_CRYSTAL, self.position)
+            self.parent.do( (action+ Delay(0.05)) *2 )
